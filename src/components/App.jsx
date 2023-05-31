@@ -33,13 +33,13 @@ class App extends Component {
   };
 
   render() {
-    const { modalImg, showModal, page } = this.state;
+    const { modalImg, showModal, page, inputValue } = this.state;
 
     return (
       <>
         <Searchbar getInputValue={this.getInputValue} />
         <ImageGallery
-          inputValue={this.state.inputValue}
+          inputValue={inputValue}
           onClick={this.getLargeImg}
           loadMoreBtn={this.loadMoreBtn}
           page={page}

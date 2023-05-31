@@ -11,10 +11,11 @@ export default class Searchbar extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    if (this.state.input.trim() === '') {
+    const { input } = this.state;
+    if (input.trim() === '') {
       return toast.error('Please enter key words for search', notifyOptions);
     }
-    this.props.getInputValue(this.state.input);
+    this.props.getInputValue(input);
     this.setState({ input: '' });
   };
 
@@ -23,6 +24,7 @@ export default class Searchbar extends Component {
   };
 
   render() {
+    const { input } = this.state;
     return (
       <Header>
         <Form onSubmit={this.handleSubmit}>
@@ -35,7 +37,7 @@ export default class Searchbar extends Component {
             type="text"
             autoComplete="off"
             onChange={this.handleChange}
-            value={this.state.input}
+            value={input}
             autoFocus
             placeholder="Search images and photos"
           />

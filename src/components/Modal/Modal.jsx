@@ -1,42 +1,37 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import {Overlay, ModalWrap, Img} from './Modal.styled';
+import { createPortal } from 'react-dom';
+import { Overlay, ModalWrap, Img } from './Modal.styled';
+
+const modalRoot = document.querySelector('#modal-root');
 
 export default class Modal extends Component {
-    static propTypes = {
-        url: PropTypes.string.isRequired,
-        onClose: PropTypes.func.isRequired,
-    };
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleClickEsc);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleClickEsc);
+  }
 
-
-
-    componentDidMount() {
-        window.addEventListener('keydown', this.handleClickEsc);
+  handleClickBackdrop = e => {
+    if (e.target === e.currentTarget) {
+      this.props.onClose();
     }
-    componentWillUnmount() {
-        window.removeEventListener('keydown', this.handleClickEsc);
-    }
+  };
 
-    handleClickBackdrop = e => {
-        if (e.target === e.currentTarget) {
-            this.props.onClose();
-        }
+  handleClickEsc = e => {
+    if (e.code === 'Escape') {
+      this.props.onClose();
     }
+  };
 
-     handleClickEsc = e => {
-        if (e.code === 'Escape') {
-            this.props.onClose();
-        }
-    }
-
-
-    render() {
-        return (
-            <Overlay  onClick={this.handleClickBackdrop}>
-                <ModalWrap >
-                    <Img src={this.props.url} alt="" />
-                </ModalWrap>
-            </Overlay>
-        )
-    }
+  render() {
+    return createPortal(
+      <Overlay onClick={this.handleClickBackdrop}>
+        <ModalWrap>
+          <Img src={this.props.url} alt="" />
+        </ModalWrap>
+      </Overlay>,
+      modalRoot
+    );
+  }
 }

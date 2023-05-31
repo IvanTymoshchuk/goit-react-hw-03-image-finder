@@ -1,24 +1,29 @@
 import { Component } from 'react';
-import PropTypes from 'prop-types';
 import { WrapGallery } from './ImageGallery.styled';
 import getImages from '../../services/imgApi';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import Loader from '../Loader/Loader';
 import Button from '../Button/Button';
-import { toast } from 'react-toastify';
-import { notifyOptions } from 'notifyOption/notify';
+import ImageErrorView from '../ImageErrorView/ImageErrorView';
+
+const STATUS = {
+  IDLE: 'idle',
+  REJECTED: 'rejected',
+  PENDING: 'pending',
+  RESOLVE: 'resolve',
+};
 
 export default class ImageGallery extends Component {
   state = {
     images: [],
-    status: 'idle',
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.inputValue !== this.props.inputValue) {
+    const { page, inputValue } = this.props;
+    if (prevProps.inputValue !== inputValue) {
       this.handleLoadMore();
     }
-    if (prevProps.page !== this.props.page && this.props.page > 1) {
+    if (prevProps.page !== page && page > 1) {
       this.fetchLoadMore();
     }
   }
@@ -27,37 +32,41 @@ export default class ImageGallery extends Component {
     const { inputValue, page } = this.props;
 
     getImages(inputValue, page)
-      .then(response => {
+      .then(res => {
         this.setState({
-          images: response.hits,
-          status: 'resolve',
+          images: res.hits,
+          status: STATUS.RESOLVE,
         });
       })
-      .catch(error => this.setState({ status: 'rejected' }));
+      .catch(error => this.setState({ status: STATUS.REJECTED }));
   };
 
   fetchLoadMore = () => {
     const { inputValue, page } = this.props;
 
     getImages(inputValue, page)
-      .then(response => {
+      .then(res => {
         this.setState(prevState => ({
-          images: [...prevState.images, ...response.hits],
-          status: 'resolve',
+          images: [...prevState.images, ...res.hits],
+          status: STATUS.RESOLVE,
         }));
       })
-      .catch(error => this.setState({ status: 'rejected' }));
+      .catch(error => this.setState({ status: STATUS.REJECTED }));
   };
 
   render() {
-    const { images, status } = this.state;
+    const { images, status, error } = this.state;
     const { onClick, loadMoreBtn } = this.props;
 
-    if (status === 'pending') {
+    if (status === STATUS.PENDING) {
       return <Loader />;
     }
 
-    if (status === 'resolve') {
+    if (status === STATUS.REJECTED) {
+      return <ImageErrorView message={error.message} />;
+    }
+
+    if (status === STATUS.RESOLVE) {
       return (
         <>
           <WrapGallery>
@@ -70,18 +79,13 @@ export default class ImageGallery extends Component {
               />
             ))}
           </WrapGallery>
-          {images.length !== 0 ? (
-            <Button onClick={loadMoreBtn} />
+          {images.length === 0 ? (
+            <ImageErrorView />
           ) : (
-            toast.warning('Oops... there are no images matching your search...', notifyOptions)
+            <Button onClick={loadMoreBtn} />
           )}
         </>
       );
     }
   }
-
-  static propTypes = {
-    onClick: PropTypes.func.isRequired,
-    inputValue: PropTypes.string.isRequired,
-  };
 }
