@@ -9,6 +9,7 @@ export const ListImg = styled.li`
 export const Img = styled.img`
   width: 100%;
   height: 260px;
+  border-radius:5px;
   object-fit: cover;
   transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
   :hover {
