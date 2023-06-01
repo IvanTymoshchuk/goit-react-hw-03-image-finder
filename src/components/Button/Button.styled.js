@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const Btn = styled.button`
+export const BtnLoadMore = styled.button`
   border-radius: 0.25rem;
   text-transform: uppercase;
   font-style: normal;

@@ -11,7 +11,7 @@ export const Wraper = styled.div`
 
 export const Text = styled.p`
   max-width: 80%;
-  color: black;
+  color: white;
   text-align: center;
   font-family: 500;
   font-size: 22px;

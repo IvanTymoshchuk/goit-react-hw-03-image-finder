@@ -1,18 +1,18 @@
-import { Oval } from 'react-loader-spinner';
-import {LoaderSvg} from './Loader.stylesd';
+import { Dna } from 'react-loader-spinner';
 
-export default function Loader() {
+export const Loader = ({ isLoading }) => {
   return (
-    <LoaderSvg>
-      <Oval
-        ariaLabel="loading-indicator"
-        height={100}
-        width={100}
-        strokeWidth={5}
-        strokeWidthSecondary={1}
-        color="blue"
-        secondaryColor="white"
-      />
-    </LoaderSvg>
+    <Dna
+      visible={isLoading}
+      height="80"
+      width="80"
+      ariaLabel="dna-loading"
+      wrapperStyle={{
+        display: 'block',
+        marginTop: '5px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+      }}
+    />
   );
-}
+};

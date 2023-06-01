@@ -1,18 +1,25 @@
-// import PropTypes from 'prop-types';
-import {ListImg, Img} from './ImageGalleryItem.styled';
+import PropTypes from 'prop-types';
+import { ImageItem, Img } from './ImageGalleryItem.styled';
 
-export default function ImageGalleryItem({ url, tags, onClick }) {
+export const ImageGalleryItem = ({ item, openModal }) => {
+  const { largeImageURL, tags, webformatURL } = item;
   return (
-    <>
-      <ListImg >
-        <Img src={url} alt={tags} onClick={() => onClick(url)} />
-      </ListImg>
-    </>
+    <ImageItem
+      onClick={e => {
+        e.preventDefault();
+        openModal(largeImageURL, tags);
+      }}
+    >
+      <Img src={webformatURL} alt={tags} loading="lazy" />
+    </ImageItem>
   );
-}
+};
 
-// ImageGalleryItem.propTypes = {
-//   url: PropTypes.string.isRequired,
-//   tags: PropTypes.string.isRequired,
-//   onClick: PropTypes.func.isRequired,
-// };
+ImageGalleryItem.propTypes = {
+  item: PropTypes.shape({
+    tags: PropTypes.string.isRequired,
+    webformatURL: PropTypes.string.isRequired,
+    largeImageURL: PropTypes.string.isRequired,
+  }).isRequired,
+  openModal: PropTypes.func.isRequired,
+};

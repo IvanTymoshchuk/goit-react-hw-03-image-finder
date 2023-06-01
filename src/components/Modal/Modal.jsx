@@ -1,35 +1,39 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { createPortal } from 'react-dom';
-import { Overlay, ModalWrap, Img } from './Modal.styled';
+import { Overlay, ModalDiv } from './Modal.styled';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export default class Modal extends Component {
+export class Modal extends Component {
+  // слухач для кнопок
   componentDidMount() {
     window.addEventListener('keydown', this.handleClickEsc);
   }
+  // чистимо за собою після закриття модалки
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleClickEsc);
   }
 
-  handleClickBackdrop = e => {
-    if (e.target === e.currentTarget) {
-      this.props.onClose();
-    }
-  };
-
   handleClickEsc = e => {
+    // перевірка клавіші Escape
     if (e.code === 'Escape') {
       this.props.onClose();
     }
   };
 
+  // закриття модалки по кліку на бекдроп
+  handleClickBackdrop = e => {
+    // перевірка чи клік був на бекдроп
+    if (e.currentTarget === e.target) {
+      this.props.onClose();
+    }
+  };
+
   render() {
+    const { children } = this.props;
     return createPortal(
       <Overlay onClick={this.handleClickBackdrop}>
-        <ModalWrap>
-          <Img src={this.props.url} alt="" />
-        </ModalWrap>
+        <ModalDiv>{children}</ModalDiv>
       </Overlay>,
       modalRoot
     );

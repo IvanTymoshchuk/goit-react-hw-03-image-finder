@@ -1,7 +1,7 @@
 import oops from '../../assets/oops.png';
 import { Wraper, Img, Text } from './ImageErrorView.styled';
 
-export default function ImageErrorView() {
+export const  ImageErrorView= () => {
   return (
     <Wraper>
       <Img src={oops} alt="oops" width="240" />

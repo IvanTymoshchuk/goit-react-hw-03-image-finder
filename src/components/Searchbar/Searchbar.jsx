@@ -1,30 +1,38 @@
 import { Component } from 'react';
-import { Header, Form, Button, Input } from './Searchbar.styled';
 import { HiMagnifyingGlass } from 'react-icons/hi2';
-import { toast } from 'react-toastify';
-import { notifyOptions } from 'notifyOption/notify';
+import { ToastContainer, toast } from 'react-toastify';
+import { Header, Form, Button, Input } from './Searchbar.styled';
+import {
+  notificationMassege,
+  notificationOptions,
+} from '../Notification/Notification';
 
-export default class Searchbar extends Component {
+export class Searchbar extends Component {
   state = {
-    input: '',
+    textQuery: '',
+  };
+  // стежимо за змінами Input (контрольований елемент)
+  onChangeInput = e => {
+    this.setState({ textQuery: e.currentTarget.value.trim().toLowerCase() });
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    const { input } = this.state;
-    if (input.trim() === '') {
-      return toast.error('Please enter key words for search', notifyOptions);
+    const { textQuery } = this.state;
+    const { onSubmit } = this.props;
+    // повідомлення
+    if (textQuery === '') {
+      toast.error(`${notificationMassege}`, notificationOptions);
     }
-    this.props.getInputValue(input);
-    this.setState({ input: '' });
-  };
+    //фун-я onSubmit прийшла з App через пропси
+    onSubmit(textQuery);
 
-  handleChange = e => {
-    this.setState({ input: e.target.value });
+    //очистка рядка пошука
+    this.setState({ textQuery: '' });
   };
 
   render() {
-    const { input } = this.state;
+    const { textQuery } = this.state;
     return (
       <Header>
         <Form onSubmit={this.handleSubmit}>
@@ -33,15 +41,15 @@ export default class Searchbar extends Component {
           </Button>
 
           <Input
-            name="input"
+            value={textQuery}
+            onChange={this.onChangeInput}
             type="text"
-            autoComplete="off"
-            onChange={this.handleChange}
-            value={input}
+            autocomplete="off"
             autoFocus
             placeholder="Search images and photos"
           />
         </Form>
+        <ToastContainer />
       </Header>
     );
   }
