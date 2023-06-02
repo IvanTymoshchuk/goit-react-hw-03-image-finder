@@ -24,21 +24,21 @@ export class App extends Component {
     const prevSearchValue = prevState.textQuery;
     const nextSearchValue = this.state.textQuery;
 
-    if (prevSearchValue !== nextSearchValue) {
-      this.setState({ page: 1, images: [] });
-    }
+    // if (prevSearchValue !== nextSearchValue) {
+    //   this.setState({ page: 1, images: [] });
+    // }
 
     // Перевіряємо, чи змінились пропси запиту або state сторінки (page)
     if (prevSearchValue !== nextSearchValue || prevState.page !== page) {
       // запуск спінера
-      this.setState({ loading: true, error: null });
+      this.setState({ loading: true }); //error: null
 
       //  запит на бекенд
       try {
         const response = await imgApi(nextSearchValue, page);
         const { hits, totalHits } = response.data;
         this.setState(prevState => ({
-          images: page === 1 ? hits : [...prevState.images, ...hits],
+          images:  [...prevState.images, ...hits], //page === 1 ? hits :
           totalPage: totalHits,
         }));
       } catch (error) {
@@ -51,7 +51,15 @@ export class App extends Component {
 
   //  запит пошуку в App з Searchbar
   handleSubmit = searchValue => {
-    this.setState({ textQuery: searchValue, page: 1 });
+    this.setState({
+      textQuery: searchValue,
+      page: 1,
+      images: [],
+      loading: false,
+      showModal: false,
+      error: null,
+      totalPage: null,
+    });
   };
 
   // кнопка завантаження наступних фото
